@@ -8,6 +8,7 @@ const errorHandler = (err) => {
     throw new Error("Что-то пошло не так");
   }
 };
+
 const exitMaker = () => {
   stdout.write("Желаю творческих узбеков и счастья в личной жизни. Пух.");
   process.exit();
