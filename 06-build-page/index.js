@@ -13,6 +13,7 @@ const assets = path.join(__dirname, "assets");
 
 const errorHandler = (err) => {
   if (err) {
+    console.log(err);
     throw err;
   }
 };
@@ -24,6 +25,7 @@ fs.mkdir(distAssets, { recursive: true }, errorHandler);
 fs.mkdir(distFonts, { recursive: true }, errorHandler);
 fs.mkdir(distImg, { recursive: true }, errorHandler);
 fs.mkdir(distSvg, { recursive: true }, errorHandler);
+copyEverything();
 fs.writeFile(stylesCss, "", errorHandler);
 fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
   err
@@ -40,7 +42,7 @@ fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
         }
       })
 );
-copyEverything();
+
 const templateStream = fs.createReadStream(templatePath, "utf-8");
 templateStream.on("data", (data) => (template += data));
 templateStream.on("end", () => {
