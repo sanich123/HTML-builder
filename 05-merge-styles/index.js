@@ -16,7 +16,6 @@ fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
     : data.forEach((file) => {
         const pathToFile = path.join(stylesPath, file.name);
         const extName = path.extname(pathToFile);
-
         if (!file.isDirectory() && extName === ".css") {
           fs.readFile(pathToFile, "utf-8", (err, data) =>
             err
