@@ -5,7 +5,11 @@ const componentsPath = path.join(__dirname, "components");
 const distPath = path.join(__dirname, "project-dist");
 const stylesCss = path.join(distPath, "style.css");
 const stylesPath = path.join(__dirname, "styles");
-const assetsPath = path.join(__dirname, "assets");
+const distAssets = path.join(__dirname, "project-dist/assets");
+const distFonts = path.join(distAssets, "fonts");
+const distImg = path.join(distAssets, "img");
+const distSvg = path.join(distAssets, "svg");
+const assets = path.join(__dirname, "assets");
 
 const errorHandler = (err) => {
   if (err) {
@@ -16,6 +20,10 @@ let template = "";
 let parts = [];
 
 fs.mkdir(distPath, { recursive: true }, errorHandler);
+fs.mkdir(distAssets, { recursive: true }, errorHandler);
+fs.mkdir(distFonts, { recursive: true }, errorHandler);
+fs.mkdir(distImg, { recursive: true }, errorHandler);
+fs.mkdir(distSvg, { recursive: true }, errorHandler);
 fs.writeFile(stylesCss, "", errorHandler);
 fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
   err
@@ -32,13 +40,14 @@ fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
         }
       })
 );
+copyEverything();
 const templateStream = fs.createReadStream(templatePath, "utf-8");
 templateStream.on("data", (data) => (template += data));
 templateStream.on("end", () => {
   parts = template
     .slice()
     .split("\n")
-    .filter((el) => el.includes("{") && el.includes("}"))
+    .filter((el) => el.includes("{{") && el.includes("}}"))
     .map((el) => el.trim().replace(/{|}/gi, ""));
   template = template.split("\n");
   readAnything();
@@ -74,4 +83,46 @@ function readAnything() {
   } else {
     return;
   }
+}
+
+function copyEverything() {
+  fs.readdir(assets, (err, data) => {
+    if (err) {
+      errorHandler(err);
+    } else {
+      data.forEach((folder) => {
+        const folderPath = path.join(assets, folder);
+        fs.readdir(folderPath, (err, assets) => {
+          if (err) {
+            errorHandler(err);
+          } else {
+            assets.forEach((asset) => {
+              const extname = asset.split(".")[1];
+              let innerFolder;
+              if (extname === "woff2") {
+                innerFolder = "fonts";
+              }
+              if (extname === "jpg") {
+                innerFolder = "img";
+              }
+              if (extname === "svg") {
+                innerFolder = "svg";
+              }
+              const assetsPath = path.join(
+                __dirname,
+                `assets/${innerFolder}`,
+                asset
+              );
+              const distPath = path.join(
+                __dirname,
+                `project-dist/assets/${innerFolder}`,
+                asset
+              );
+              fs.copyFile(assetsPath, distPath, errorHandler);
+            });
+          }
+        });
+      });
+    }
+  });
 }
