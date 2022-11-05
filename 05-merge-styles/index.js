@@ -11,10 +11,10 @@ const bundleFile = path.join(__dirname, "project-dist", "bundle.css");
 fs.writeFile(bundleFile, "", errorHandler);
 fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
   err ? errorHandler(err) : data.forEach((file) => {
-        const pathToFile = path.join(stylesPath, file.name);
-        const extName = path.extname(pathToFile);
-        if (!file.isDirectory() && extName === ".css") {
-          fs.readFile(pathToFile, "utf-8", (err, data) => err ? errorHandler(err) : fs.appendFile(bundleFile, data, errorHandler));
-        }
-      })
+    const pathToFile = path.join(stylesPath, file.name);
+    const extName = path.extname(pathToFile);
+      if (!file.isDirectory() && extName === ".css") {
+        fs.readFile(pathToFile, "utf-8", (err, data) => err ? errorHandler(err) : fs.appendFile(bundleFile, data, errorHandler));
+      }
+  })
 );
