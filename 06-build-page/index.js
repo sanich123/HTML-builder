@@ -13,9 +13,7 @@ const distSvg = path.join(distAssets, "svg");
 const assets = path.join(__dirname, "assets");
 
 const errorHandler = (err) => {
-  if (err) {
-    console.log(err);
-  }
+  if (err) console.log(err);
 };
 
 fs.mkdir(distPath, { recursive: true }, errorHandler);
@@ -37,11 +35,7 @@ fs.readdir(stylesPath, { withFileTypes: true }, (err, data) =>
 const templateStream = fs.createReadStream(templatePath, "utf-8");
 templateStream.on("data", (data) => (template += data));
 templateStream.on("end", () => {
-  parts = template
-    .slice()
-    .split("\n")
-    .filter((el) => el.includes("{{") && el.includes("}}"))
-    .map((el) => el.trim().replace(/{|}/gi, ""));
+  parts = template.slice().split("\n").filter((el) => el.includes("{{") && el.includes("}}")).map((el) => el.trim().replace(/{|}/gi, ""));
   template = template.split("\n");
   readAnything();
 });
